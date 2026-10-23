@@ -60,6 +60,27 @@ After successful training, the best validation state is saved and chat opens.
 Type a sentence fragment to continue it. Use `/quit` to exit. Next launch loads
 `models/transformer.pt`; unchanged data takes you straight to chat.
 
+## What to Expect
+
+MiniLanguageModel helps you understand and experiment with training a GPT-style
+model **from random initialization**. It is not pretrained or instruction-tuned.
+
+> **Don't expect ChatGPT-level responses.** The included *The Secret Garden*
+> dataset is a small demonstration of how Transformer training works. After
+> training on this book alone, generated text and chat responses may still be
+> repetitive, incoherent, or nonsensical.
+
+The model learns to **predict and continue text**, not necessarily to understand
+questions or follow instructions. More high-quality, relevant text and appropriate
+training can improve language patterns and coherence, but improvement is not
+guaranteed. A larger dataset alone does not create conversational intelligence:
+architecture, parameter count, training configuration, data quality, and available
+computing resources all limit performance.
+
+Experiment by adding your own `.txt` files, continuing training, or choosing a
+clean rebuild. **The goal is to observe learning—from random predictions toward
+increasingly structured text—and discover what helps through measured experiments.**
+
 ## What you can explore
 
 - **Build a real GPT:** embeddings, explicit Q/K/V projections, causal attention,
@@ -138,6 +159,49 @@ Chapter detection is intentionally conservative: other heading conventions need
 explicit story separators or separate files. If the deterministic hash split
 produces an empty partition, the app asks for more documents rather than silently
 splitting overlapping windows. Near-duplicates are not automatically detected.
+
+## Try Larger Datasets
+
+Ready to go beyond the demo? These **external downloads** offer simple English
+stories for small-language-model experiments. Only *The Secret Garden* is bundled
+in this repository; downloaded datasets stay local and are ignored by Git.
+
+| Option | Download size | Best starting point |
+|---|---:|---|
+| [TinyStories V2 — Small Experiment](https://huggingface.co/datasets/roneneldan/TinyStories/blob/main/TinyStoriesV2-GPT4-valid.txt) | 22.5 MB | A manageable next experiment |
+| [TinyStories V2 — Full Training Dataset](https://huggingface.co/datasets/roneneldan/TinyStories/blob/main/TinyStoriesV2-GPT4-train.txt) | 2.23 GB | A much larger collection of simple English stories |
+
+> **Keep evaluation separate.** The 22.5 MB file is officially a **validation
+> file**. Repurpose it for informal training only with a separate, non-overlapping
+> held-out split. The normal V4 `/train` engine creates this split by complete
+> stories before generating windows. Never train and evaluate on the same stories,
+> or report the whole repurposed file as an untouched official validation set.
+> If a checkpoint already learned those stories through legacy imports, rebuild
+> first to establish a clean split.
+
+1. Open the desired file link and select **Download file** to save the `.txt`.
+2. Place it directly inside `training_data/`, keeping its `<|endoftext|>` story separators.
+3. Launch `python main.py`.
+4. Follow the detected dataset-change prompt.
+5. Continue training, or choose a clean rebuild and confirm `RESET` when requested.
+6. Try text continuations and monitor held-out validation loss in each epoch summary.
+
+To train **exclusively on TinyStories**, move the demo novel out of `training_data/`
+(or remove your local copy) and choose a clean rebuild. Simply removing a file
+cannot erase what an existing model learned from it.
+
+Start small: larger datasets require significantly more training time and compute,
+plus temporary disk space for the corpus windows. More data does **not** guarantee
+coherent conversational responses. These are synthetic stories, not an
+instruction-following conversation dataset.
+
+**Credits:** TinyStories was created by **Ronen Eldan and Yuanzhi Li**
+([paper](https://arxiv.org/abs/2305.07759),
+[dataset card](https://huggingface.co/datasets/roneneldan/TinyStories)).
+V2 uses GPT-4-generated stories; using these text files does not download model
+weights or require an AI API. The dataset is licensed under
+[CDLA-Sharing-1.0](https://cdla.dev/sharing-1-0/), separately from this project's
+MIT software license. Review its terms before using or redistributing the data.
 
 ## How it works
 
