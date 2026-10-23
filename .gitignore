@@ -1,0 +1,33 @@
+# Local environments and editor state
+.venv/
+venv/
+env/
+.idea/
+.vscode/
+.DS_Store
+__pycache__/
+*.py[cod]
+.pytest_cache/
+# Exact allowlist: no personal datasets, including non-text files or subfolders.
+training_data/*
+!training_data/.gitkeep
+!training_data/TheSecretGardenByFrancesHodgsonBurnett.txt
+# Learned parameters and machine-specific metadata never belong in Git.
+models/*
+!models/.gitkeep
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.meta.json
+model.json
+*.history.json
+*.sqlite
+*.tmp
+outputs/
+experiments/
+v4_experiment.json
+/*.txt
+!/requirements.txt
+.env
+.env.*

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="210" viewBox="0 0 1040 210" role="img" aria-labelledby="title desc">
+<title id="title">From ordinary text to your own tiny Transformer</title><desc id="desc">Text files become UTF-8 bytes. A Transformer learns by predicting the next byte. Save a checkpoint and generate continuations locally.</desc>
+<rect width="1040" height="210" rx="18" fill="#101827"/>
+<g font-family="system-ui, sans-serif"><text x="32" y="44" font-size="14" letter-spacing="3" fill="#8ddbc5">MINI LANGUAGE MODEL · FROM SCRATCH</text>
+<g fill="#19283b" stroke="#375069"><rect x="32" y="72" width="208" height="91" rx="12"/><rect x="288" y="72" width="208" height="91" rx="12"/><rect x="544" y="72" width="208" height="91" rx="12"/><rect x="800" y="72" width="208" height="91" rx="12"/></g>
+<g fill="#f3f6fb" font-size="20"><text x="52" y="109">Your text</text><text x="308" y="109">UTF-8 bytes</text><text x="564" y="109">Transformer</text><text x="820" y="109">Continuation</text></g>
+<g fill="#a9bbd0" font-size="13"><text x="52" y="139">Ordinary .txt files</text><text x="308" y="139">Fixed vocabulary · 259 IDs</text><text x="564" y="139">Learn next-token prediction</text><text x="820" y="139">Sample from learned weights</text></g>
+<g fill="#8ddbc5" font-size="26"><text x="253" y="126">→</text><text x="509" y="126">→</text><text x="765" y="126">→</text></g>
+<text x="32" y="192" fill="#a9bbd0" font-size="12">Random initialization. Local training. No pretrained weights or inference APIs.</text></g></svg>

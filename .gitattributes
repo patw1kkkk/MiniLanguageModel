@@ -1,0 +1,6 @@
+* text=auto
+*.py text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+# Preserve the official edition byte-for-byte, including CRLF and license.
+training_data/TheSecretGardenByFrancesHodgsonBurnett.txt -text

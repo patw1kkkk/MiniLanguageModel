@@ -1,0 +1,5 @@
+# Fundamental tensor operations/autograd only; no pretrained model packages.
+# Modern PyTorch supports restricted weights_only checkpoint loading.
+torch>=2.6,<3
+# PyTorch's NumPy interoperability expects NumPy even though our code uses tensors.
+numpy>=1.26,<3
