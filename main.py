@@ -3340,31 +3340,36 @@ class ReleaseTests(unittest.TestCase):
     """Publication regressions use disposable sources and checkpoints only."""
 
     def test_chapters_split_before_windows_and_exclude_front_matter(self):
-        with tempfile.TemporaryDirectory() as folder:
-            path=Path(folder)/'novel.txt'
-            chapters=[f'CHAPTER {i}\nChapter {i} contains Finnish: kissa syö.\n' for i in range(1,41)]
-            path.write_text('CONTENTS AND LICENSE HEADER\n'+''.join(chapters)+'*** END OF THE PROJECT GUTENBERG EBOOK TEST ***\nLICENSE FOOTER',encoding='utf-8')
-            before=path.read_bytes()
-            corpus=CorpusWindows([path],16)
-            try:
-                self.assertEqual(corpus.db.execute('SELECT count(*) FROM stories').fetchone()[0],40)
-                self.assertGreater(corpus.count('train'),0)
-                self.assertGreater(corpus.count('validation'),0)
-                expected={}
-                for chapter in chapters:
-                    digest=hashlib.sha256(chapter.encode()).hexdigest()
-                    split='validation' if int(hashlib.sha256(f'42:{digest}'.encode()).hexdigest(),16)/2**256 < .2 else 'train'
-                    expected.setdefault(split,[]).extend(document_windows([chapter],16))
-                for split in ('train','validation'):
-                    self.assertEqual(list(corpus.windows(split)),expected[split])
-                self.assertEqual(path.read_bytes(),before)
-            finally: corpus.close()
+        # Explicit bytes make the fixture independent of the host's automatic
+        # newline translation. Test BOTH styles: byte models must preserve CRLF
+        # rather than silently turning the user's data into different tokens.
+        for newline in ('\n', '\r\n'):
+            with self.subTest(newline=repr(newline)), tempfile.TemporaryDirectory() as folder:
+                path=Path(folder)/'novel.txt'
+                chapters=[f'CHAPTER {i}\nChapter {i} contains Finnish: kissa syö.\n'.replace('\n',newline) for i in range(1,41)]
+                content='CONTENTS AND LICENSE HEADER\n'+''.join(chapters)+'*** END OF THE PROJECT GUTENBERG EBOOK TEST ***\nLICENSE FOOTER'
+                path.write_bytes(content.encode('utf-8'))
+                before=path.read_bytes()
+                corpus=CorpusWindows([path],16)
+                try:
+                    self.assertEqual(corpus.db.execute('SELECT count(*) FROM stories').fetchone()[0],40)
+                    self.assertGreater(corpus.count('train'),0)
+                    self.assertGreater(corpus.count('validation'),0)
+                    expected={}
+                    for chapter in chapters:
+                        digest=hashlib.sha256(chapter.encode()).hexdigest()
+                        split='validation' if int(hashlib.sha256(f'42:{digest}'.encode()).hexdigest(),16)/2**256 < .2 else 'train'
+                        expected.setdefault(split,[]).extend(document_windows([chapter],16))
+                    for split in ('train','validation'):
+                        self.assertEqual(list(corpus.windows(split)),expected[split])
+                    self.assertEqual(path.read_bytes(),before)
+                finally: corpus.close()
 
     def test_delimiters_override_headings_and_large_lines_are_bounded(self):
         with tempfile.TemporaryDirectory() as folder:
             path=Path(folder)/'stories.txt'
             text='CHAPTER I\n'+'x'*150000+'\nCHAPTER II\n<|endoftext|>Another story'
-            path.write_text(text,encoding='utf-8')
+            path.write_bytes(text.encode('utf-8'))
             parts=list(corpus_document_chunks(path))
             self.assertEqual(sum(p is None for p in parts),2)
             self.assertLessEqual(max(len(p) for p in parts if p is not None),65548)

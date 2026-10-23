@@ -1,5 +1,7 @@
 # MiniLanguageModel
 
+[![CPU tests](https://github.com/patw1kkkk/MiniLanguageModel/actions/workflows/tests.yml/badge.svg)](https://github.com/patw1kkkk/MiniLanguageModel/actions/workflows/tests.yml)
+
 **Train your own tiny GPT from scratch — using Python and PyTorch.**
 
 A readable decoder-only Transformer you can train on ordinary text files.
